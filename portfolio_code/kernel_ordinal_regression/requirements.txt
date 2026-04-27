@@ -1,0 +1,7 @@
+numpy>=1.26
+pandas>=2.2
+matplotlib>=3.8
+joblib>=1.3
+tqdm>=4.66
+jax>=0.4
+jaxlib>=0.4

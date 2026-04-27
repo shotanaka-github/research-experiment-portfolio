@@ -7,6 +7,8 @@
 - `color_preference_lab`: Lab 色空間での二肢選択色選好実験
 - `shape_preference_rectangle`: 1 次元形状パラメータに対する KRR + KPCA 実験
 - `robot_motion_kawaii`: ロボット動作パラメータに対する KRR + KPCA 実験
+- `kernel_ordinal_regression`: probit 型のカーネル順序回帰
+- `gp_ordinal_regression`: Gaussian process 順序回帰
 
 元コードは別フォルダに残したまま、この `portfolio_code/` 配下に整理版を新しく作っている。
 探索途中の派生スクリプトや重複結果を減らし、公開して説明しやすい最小構成へ寄せた。

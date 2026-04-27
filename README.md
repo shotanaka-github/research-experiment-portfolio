@@ -12,6 +12,10 @@
   - ロボット動作パラメータに対する KRR + KPCA
 - `portfolio_code/color_preference_lab`
   - Lab 色空間での二肢選択色選好実験
+- `portfolio_code/kernel_ordinal_regression`
+  - probit 型のカーネル順序回帰
+- `portfolio_code/gp_ordinal_regression`
+  - Gaussian process 順序回帰
 - `portfolio_code/gppca_golden_ratio`
   - 黄金比評価データに対する GPPCA
 

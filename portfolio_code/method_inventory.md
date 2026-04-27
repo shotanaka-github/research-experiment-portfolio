@@ -17,6 +17,16 @@
   - ロボット動作パラメータの KRR + KPCA 実験
 - `color_preference_lab`
   - 色選好の収集実験と Pairwise GP 後処理
+- `kernel_ordinal_regression`
+  - probit 型のカーネル順序回帰
+- `gp_ordinal_regression`
+  - GPflow を用いた Gaussian process 順序回帰
+
+## サーストン二肢選択について
+
+- 明示的に `Thurstone` モデルとして実装された推定コードは、このワークスペース近傍では確認できなかった
+- 二肢選択の実験コードとしては `color_preference_lab` がある
+- したがって、現時点で公開版に入っているのは「二肢選択データ収集」と「Pairwise GP 後処理」であり、Thurstone 推定器そのものではない
 
 ## この整理版に含めなかったもの
 
