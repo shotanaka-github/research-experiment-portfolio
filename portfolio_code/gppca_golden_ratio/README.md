@@ -17,6 +17,10 @@
 ## 実行例
 
 ```bash
+cd portfolio_code/gppca_golden_ratio
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 python scripts/run_gppca.py --epochs 200 --basis-size 64 --output-dir output
 ```
 

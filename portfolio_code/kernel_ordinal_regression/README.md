@@ -17,6 +17,9 @@
 ## 実行例
 
 ```bash
+cd portfolio_code/kernel_ordinal_regression
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python run_kernel_ordinal_regression.py
 ```

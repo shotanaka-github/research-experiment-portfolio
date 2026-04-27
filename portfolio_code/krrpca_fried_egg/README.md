@@ -31,6 +31,10 @@ kernel ridge regression で推定し、その重みを kernel PCA で低次元�
 ## 実行例
 
 ```bash
+cd portfolio_code/krrpca_fried_egg
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 python scripts/search_hyperparams.py \
   --length-min 0.1 \
   --length-max 1.0 \

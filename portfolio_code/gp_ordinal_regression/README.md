@@ -13,6 +13,11 @@ Gaussian process ordinal regression を実行する整理版である。
 ## 実行例
 
 ```bash
+cd portfolio_code/gp_ordinal_regression
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python run_gp_ordinal_regression.py
 ```
+
+`tensorflow` と `gpflow` を使うため、他の実験より依存関係が重い。

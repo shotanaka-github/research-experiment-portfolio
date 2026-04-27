@@ -26,6 +26,9 @@ Lab 色空間上の単色刺激に対して、参照色に近いと感じる色�
 ## 実行例
 
 ```bash
+cd portfolio_code/color_preference_lab
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python 2alternative.py
 ```
@@ -33,6 +36,5 @@ python 2alternative.py
 後処理:
 
 ```bash
-cd postprocess
-python main.py
+python postprocess/main.py --data-dir data --output-dir postprocess/result
 ```

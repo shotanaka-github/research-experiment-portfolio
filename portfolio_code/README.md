@@ -1,6 +1,20 @@
 # Research Code Portfolio
 
-応募用に見せやすいよう、研究コードを次の 2 つに分けて整理した。
+応募用に見せやすいよう、研究コードを整理してまとめた。
+
+## Environment
+
+各フォルダには個別の `requirements.txt` を置いている。
+まとめて環境を作る代わりに、必要な実験だけ個別に仮想環境を作る運用にしている。
+
+```bash
+cd portfolio_code
+./setup_env.sh gppca_golden_ratio
+```
+
+補足は [ENVIRONMENT.md](/Users/komorilab/Documents/New%20project/portfolio_code/ENVIRONMENT.md) にまとめた。
+
+## Projects
 
 - `gppca_golden_ratio`: 黄金比の主観評価データに対する Gaussian-process exponential-family PCA
 - `krrpca_fried_egg`: 目玉焼きデータに対する kernel-ridge-regression PCA

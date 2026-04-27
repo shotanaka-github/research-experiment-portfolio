@@ -21,7 +21,11 @@
 ## 実行例
 
 ```bash
+cd portfolio_code
+python3 -m venv robot_motion_kawaii/.venv
+source robot_motion_kawaii/.venv/bin/activate
+cd robot_motion_kawaii
 pip install -r requirements.txt
 python main_sota.py
-python cluster_meanfunc_maxmin.py
+python ../run_robot_motion_kawaii_clustering.py
 ```

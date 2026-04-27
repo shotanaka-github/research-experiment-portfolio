@@ -16,6 +16,10 @@
 ## 実行例
 
 ```bash
+cd portfolio_code/shape_preference_rectangle
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-python rectangle.py
+cd ..
+python run_shape_preference_rectangle.py
 ```

@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
@@ -7,7 +11,8 @@ SUBJECT_IDS = [
     201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 215, 216, 301
 ]
 
-def load_data():
+def load_data(data_dir: str | Path = "data"):
+    data_dir = Path(data_dir)
     X_data = [] 
     y_data = [] 
     
@@ -16,12 +21,12 @@ def load_data():
         print(f"participant {subject_id} のデータを読み込んでいます。")
 
         # 16次元の入力 (X) を読み込む
-        x_path = f'data/parameters_{subject_id}_result.csv'
+        x_path = data_dir / f"parameters_{subject_id}_result.csv"
         x_df = pd.read_csv(x_path, header=None)
         X_data.append(x_df.values)
 
         # 1次元の出力 (y) を読み込む
-        y_path = f'data/parameters_{subject_id}_response.csv'
+        y_path = data_dir / f"parameters_{subject_id}_response.csv"
         y_df = pd.read_csv(y_path, header=None)
         y_values = y_df.values.ravel() 
 

@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
@@ -31,20 +35,18 @@ def load_data():
 import numpy as np
 import pandas as pd
 
-def load_data():
+def load_data(data_dir: str | Path = "data", num_people: int = 21):
     """
     【修正版】
     各被験者のデータを読み込み、Xとyのリストとして返す。
     yは「被験者ごと」にzスコア化（標準化）する。
     """
+    data_dir = Path(data_dir)
     x_list = []
     y_list = []
-    
-    # config['num_people'] = 20 に合わせる
-    num_people = 20 
-    
+
     for i in range(1, num_people + 1):
-        df = pd.read_csv(f'data/data{i}.csv')
+        df = pd.read_csv(data_dir / f"data{i}.csv")
         print(f"data{i}.csv を読み込んでいます。 (shape: {df.shape})")
         
         # 観測点 (X) と 効用値 (y) を抽出
@@ -65,5 +67,4 @@ def load_data():
             
     print(f"\n合計 {len(x_list)} 人分のデータを読み込みました。")
     return x_list, y_list
-
 
