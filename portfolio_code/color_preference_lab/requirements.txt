@@ -1,0 +1,8 @@
+numpy>=1.26
+pandas>=2.2
+matplotlib>=3.8
+torch>=2.2
+botorch>=0.10
+gpytorch>=1.11
+psychopy>=2023.2
+Pillow>=10.0
