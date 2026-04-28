@@ -17,6 +17,7 @@ cd portfolio_code
 ## Projects
 
 - `gppca_golden_ratio`: 黄金比の主観評価データに対する Gaussian-process exponential-family PCA
+- `gppca_pairwise_golden_ratio`: 黄金比の主観評価データを二肢選択比較へ変換した pairwise GPPCA
 - `krrpca_fried_egg`: 目玉焼きデータに対する kernel-ridge-regression PCA
 - `color_preference_lab`: Lab 色空間での二肢選択色選好実験
 - `shape_preference_rectangle`: 1 次元形状パラメータに対する KRR + KPCA 実験
