@@ -5,7 +5,7 @@ from math import erf, pi, sqrt
 
 import numpy as np
 
-from .data import SubjectPreferenceData
+from .types import SubjectPreferenceData, standardize_vector
 
 
 def _rbf_kernel(x1: np.ndarray, x2: np.ndarray, length: float) -> np.ndarray:
@@ -32,7 +32,7 @@ class KernelParameters:
 
 
 class PairwiseGPPCA:
-    """Pairwise-preference extension of GPPCA."""
+    """Pairwise-preference extension of GPPCA with shared basis functions."""
 
     def __init__(
         self,
@@ -53,9 +53,17 @@ class PairwiseGPPCA:
         self.jitter = float(jitter)
         self.random_state = int(random_state)
 
-        self.x_list = [subject.x for subject in subjects]
-        self.score_list = [subject.scores for subject in subjects]
+        self.x_list = [np.asarray(subject.x, dtype=np.float64) for subject in subjects]
+        self.initial_target_list = [
+            np.zeros(subject.stimulus_count, dtype=np.float64)
+            if subject.initial_targets is None
+            else standardize_vector(subject.initial_targets)
+            for subject in subjects
+        ]
         self.subject_ids = np.asarray([subject.subject_id for subject in subjects], dtype=np.int64)
+        self.subject_labels = [subject.label or f"subject_{subject.subject_id}" for subject in subjects]
+        self.dataset_name = subjects[0].dataset_name or "pairwise_dataset"
+        self.input_dim = self.x_list[0].shape[1]
 
         self.x_all = self._build_basis(self.x_list, basis_size)
         self.basis_count = self.x_all.shape[0]
@@ -95,26 +103,31 @@ class PairwiseGPPCA:
         )
 
     @staticmethod
-    def _build_basis(x_list: list[np.ndarray], basis_size: int | None) -> np.ndarray:
-        x_all = np.concatenate(x_list, axis=0)
-        if x_all.shape[1] != 1:
-            raise ValueError("This portfolio implementation expects one-dimensional inputs.")
+    def _unique_rows(values: np.ndarray) -> np.ndarray:
+        rounded = np.round(values, decimals=12)
+        _, unique_indices = np.unique(rounded, axis=0, return_index=True)
+        return values[np.sort(unique_indices)]
 
+    @classmethod
+    def _build_basis(cls, x_list: list[np.ndarray], basis_size: int | None) -> np.ndarray:
+        x_all = cls._unique_rows(np.concatenate(x_list, axis=0))
         if basis_size is None or basis_size >= x_all.shape[0]:
-            unique_x = np.unique(x_all[:, 0])
-            return unique_x[:, None]
+            return x_all
 
-        x_min = float(np.min(x_all))
-        x_max = float(np.max(x_all))
-        return np.linspace(x_min, x_max, int(basis_size))[:, None]
+        if x_all.shape[1] == 1:
+            x_min = float(np.min(x_all))
+            x_max = float(np.max(x_all))
+            return np.linspace(x_min, x_max, int(basis_size))[:, None]
 
-    def _initial_posterior_mean(self, design_matrix: np.ndarray, scores: np.ndarray) -> np.ndarray:
-        centered = scores - scores.mean()
-        scale = max(scores.std(), 1e-8)
-        standardized = centered / scale
+        order = np.lexsort(np.flipud(x_all.T))
+        sorted_x = x_all[order]
+        chosen = np.linspace(0, sorted_x.shape[0] - 1, int(basis_size), dtype=int)
+        return sorted_x[chosen]
+
+    def _initial_posterior_mean(self, design_matrix: np.ndarray, initial_targets: np.ndarray) -> np.ndarray:
         beta = 1.0 / max(self.params.init_noise_variance, 1e-8)
         precision = self.kernel_inv + beta * (design_matrix.T @ design_matrix)
-        rhs = beta * (design_matrix.T @ standardized)
+        rhs = beta * (design_matrix.T @ initial_targets)
         return np.linalg.solve(precision, rhs)
 
     def _log_posterior(self, utility_basis: np.ndarray, comparison_matrix: np.ndarray) -> float:
@@ -128,10 +141,10 @@ class PairwiseGPPCA:
         design_matrix: np.ndarray,
         winner_indices: np.ndarray,
         loser_indices: np.ndarray,
-        scores: np.ndarray,
+        initial_targets: np.ndarray,
     ) -> tuple[np.ndarray, np.ndarray]:
         comparison_matrix = design_matrix[winner_indices] - design_matrix[loser_indices]
-        utility_basis = self._initial_posterior_mean(design_matrix, scores)
+        utility_basis = self._initial_posterior_mean(design_matrix, initial_targets)
         current_objective = self._log_posterior(utility_basis, comparison_matrix)
 
         for _ in range(self.params.newton_max_iter):
@@ -186,7 +199,7 @@ class PairwiseGPPCA:
                 design_matrix=self.design_matrices[task_index],
                 winner_indices=subject.winner_indices,
                 loser_indices=subject.loser_indices,
-                scores=subject.scores,
+                initial_targets=self.initial_target_list[task_index],
             )
             mean[task_index] = task_mean
             cov[task_index] = task_cov

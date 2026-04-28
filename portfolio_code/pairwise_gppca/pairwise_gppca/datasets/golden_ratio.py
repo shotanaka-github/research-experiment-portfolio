@@ -1,23 +1,15 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+from ..types import SubjectPreferenceData, standardize_vector
 
-@dataclass(frozen=True)
-class SubjectPreferenceData:
-    subject_id: int
-    x: np.ndarray
-    scores: np.ndarray
-    winner_indices: np.ndarray
-    loser_indices: np.ndarray
 
-    @property
-    def comparison_count(self) -> int:
-        return int(self.winner_indices.shape[0])
+def _default_data_dir() -> Path:
+    return Path(__file__).resolve().parents[2] / "data" / "golden_ratio"
 
 
 def _resolve_column(frame: pd.DataFrame, preferred: str, fallback_index: int) -> np.ndarray:
@@ -64,15 +56,13 @@ def _build_pairwise_comparisons(
 
 
 def load_pairwise_golden_ratio_data(
-    data_dir: str | Path,
-    num_subjects: int = 20,
+    data_dir: str | Path | None = None,
+    num_subjects: int = 21,
     min_score_gap: float = 1.0,
     max_comparisons: int | None = 400,
     random_state: int = 0,
 ) -> list[SubjectPreferenceData]:
-    """Load golden-ratio data and convert ratings into pairwise comparisons."""
-
-    data_dir = Path(data_dir)
+    data_dir = Path(data_dir) if data_dir is not None else _default_data_dir()
     rng = np.random.default_rng(random_state)
     subjects: list[SubjectPreferenceData] = []
 
@@ -100,9 +90,11 @@ def load_pairwise_golden_ratio_data(
             SubjectPreferenceData(
                 subject_id=subject_id,
                 x=x.astype(np.float64),
-                scores=scores.astype(np.float64),
                 winner_indices=winners,
                 loser_indices=losers,
+                initial_targets=standardize_vector(scores),
+                label=f"subject_{subject_id}",
+                dataset_name="golden_ratio_induced",
             )
         )
 

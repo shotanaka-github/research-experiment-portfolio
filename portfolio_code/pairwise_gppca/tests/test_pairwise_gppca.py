@@ -5,18 +5,14 @@ from pathlib import Path
 
 import numpy as np
 
-from gppca_pairwise_golden_ratio import (
-    KernelParameters,
-    PairwiseGPPCA,
-    load_pairwise_golden_ratio_data,
-)
+from pairwise_gppca import KernelParameters, PairwiseGPPCA, load_dataset
 
 
 class PairwiseGPPCTest(unittest.TestCase):
-    def test_loader_creates_pairwise_comparisons(self) -> None:
-        data_dir = Path(__file__).resolve().parents[1] / "data"
-        subjects = load_pairwise_golden_ratio_data(
-            data_dir=data_dir,
+    def test_golden_ratio_loader_creates_induced_pairwise_data(self) -> None:
+        subjects = load_dataset(
+            "golden_ratio_induced",
+            data_dir=Path(__file__).resolve().parents[1] / "data" / "golden_ratio",
             num_subjects=3,
             min_score_gap=1.0,
             max_comparisons=80,
@@ -26,10 +22,21 @@ class PairwiseGPPCTest(unittest.TestCase):
         self.assertTrue(all(subject.comparison_count > 0 for subject in subjects))
         self.assertTrue(all(subject.x.shape[1] == 1 for subject in subjects))
 
-    def test_model_smoke_fit_and_predict(self) -> None:
-        data_dir = Path(__file__).resolve().parents[1] / "data"
-        subjects = load_pairwise_golden_ratio_data(
-            data_dir=data_dir,
+    def test_thurstone_loader_reads_real_pairwise_data(self) -> None:
+        subjects = load_dataset(
+            "thurstone_pairwise",
+            data_dir=Path(__file__).resolve().parents[1] / "data" / "thurstone" / "data10",
+            session_count=1,
+            subject_count=2,
+        )
+        self.assertEqual(len(subjects), 2)
+        self.assertEqual(subjects[0].x.shape[1], 6)
+        self.assertTrue(subjects[0].comparison_count > 0)
+
+    def test_model_smoke_fit_and_predict_on_golden_ratio(self) -> None:
+        subjects = load_dataset(
+            "golden_ratio_induced",
+            data_dir=Path(__file__).resolve().parents[1] / "data" / "golden_ratio",
             num_subjects=3,
             min_score_gap=1.0,
             max_comparisons=60,
