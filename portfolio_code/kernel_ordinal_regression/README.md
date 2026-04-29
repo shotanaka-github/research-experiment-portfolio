@@ -1,0 +1,33 @@
+# Kernel Ordinal Regression
+
+7 段階の順序評定データに対して、probit 型のカーネル順序回帰を各被験者ごとに学習し、
+得られた係数ベクトルを PCA 的に要約する。
+
+## Source
+
+- `model/KROR_PCA2.py`: JAX による probit 型カーネル順序回帰 + PCA
+- `load_ordinal_data.py`: 被験者ごとの入力と順序ラベルの読み込み
+- `run_kernel_ordinal_regression.py`: 学習、潜在座標保存、予測曲線保存
+- `data/`: 20 名分の順序評定 CSV
+## Tree
+
+```text
+kernel_ordinal_regression/
+├── README.md
+├── requirements.txt
+├── load_ordinal_data.py
+├── run_kernel_ordinal_regression.py
+├── model/
+│   └── KROR_PCA2.py
+└── data/
+```
+
+## Run
+
+```bash
+cd portfolio_code/kernel_ordinal_regression
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python run_kernel_ordinal_regression.py
+```

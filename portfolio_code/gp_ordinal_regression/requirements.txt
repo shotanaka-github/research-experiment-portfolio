@@ -1,0 +1,6 @@
+numpy>=1.26
+pandas>=2.2
+matplotlib>=3.8
+gpflow>=2.9
+tensorflow>=2.16
+tensorflow-probability>=0.24
